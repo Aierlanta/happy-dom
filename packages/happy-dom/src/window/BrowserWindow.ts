@@ -2150,6 +2150,7 @@ export default class BrowserWindow extends EventTarget implements INodeJSGlobal 
 	 */
 	public set innerWidth(value: number) {
 		this.#innerWidth = value;
+		this.#updateIntersectionObservers();
 	}
 
 	/**
@@ -2172,6 +2173,7 @@ export default class BrowserWindow extends EventTarget implements INodeJSGlobal 
 	 */
 	public set innerHeight(value: number) {
 		this.#innerHeight = value;
+		this.#updateIntersectionObservers();
 	}
 
 	/**
