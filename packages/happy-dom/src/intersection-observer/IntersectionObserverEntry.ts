@@ -1,4 +1,4 @@
-import type DOMRect from '../dom/DOMRect.js';
+import type DOMRectReadOnly from '../dom/DOMRectReadOnly.js';
 import type Node from '../nodes/node/Node.js';
 
 /**
@@ -7,11 +7,11 @@ import type Node from '../nodes/node/Node.js';
  * @see https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserverEntry
  */
 export default class IntersectionObserverEntry {
-	public readonly boundingClientRect: DOMRect | null = null;
+	public readonly boundingClientRect: DOMRectReadOnly | null = null;
 	public readonly intersectionRatio: number = 0;
-	public readonly intersectionRect: DOMRect | null = null;
+	public readonly intersectionRect: DOMRectReadOnly | null = null;
 	public readonly isIntersecting: boolean = false;
-	public readonly rootBounds: DOMRect | null = null;
+	public readonly rootBounds: DOMRectReadOnly | null = null;
 	public readonly target: Node | null = null;
 	public readonly time: number = 0;
 
