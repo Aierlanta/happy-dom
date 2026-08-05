@@ -234,11 +234,15 @@ export default class IntersectionObserver {
 			return;
 		}
 
+		const queueLengthBefore = this.#queuedEntries.length;
+
 		for (const target of this.#observationTargets) {
 			this.#computeObservation(target, false);
 		}
 
-		this.#scheduleDelivery();
+		if (this.#queuedEntries.length > queueLengthBefore) {
+			this.#scheduleDelivery();
+		}
 	}
 
 	/**
