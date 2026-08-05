@@ -32,31 +32,29 @@ describe('IntersectionObserver', () => {
 
 	describe('constructor()', () => {
 		it('Throws when callback is not a function.', () => {
-			expect(() => new window.IntersectionObserver(<any>null)).toThrowError(
+			expect(() => new window.IntersectionObserver(<any>null)).toThrow(
 				/The callback provided as parameter 1 is not a function/
 			);
-			expect(() => new window.IntersectionObserver(<any>'callback')).toThrowError(
+			expect(() => new window.IntersectionObserver(<any>'callback')).toThrow(
 				/The callback provided as parameter 1 is not a function/
 			);
 		});
 
 		it('Throws when root is invalid.', () => {
-			expect(() => new window.IntersectionObserver(() => {}, { root: <any>123 })).toThrowError(
-				/root/
-			);
+			expect(() => new window.IntersectionObserver(() => {}, { root: <any>123 })).toThrow(/root/);
 			expect(
 				() => new window.IntersectionObserver(() => {}, { root: <any>document.createTextNode('x') })
-			).toThrowError(/root/);
+			).toThrow(/root/);
 		});
 
 		it('Throws when rootMargin is not a string.', () => {
-			expect(() => new window.IntersectionObserver(() => {}, { rootMargin: <any>10 })).toThrowError(
+			expect(() => new window.IntersectionObserver(() => {}, { rootMargin: <any>10 })).toThrow(
 				/rootMargin/
 			);
 		});
 
 		it('Throws SyntaxError when rootMargin cannot be parsed.', () => {
-			expect(() => new window.IntersectionObserver(() => {}, { rootMargin: '10em' })).toThrowError(
+			expect(() => new window.IntersectionObserver(() => {}, { rootMargin: '10em' })).toThrow(
 				/rootMargin/
 			);
 			expect(() => new window.IntersectionObserver(() => {}, { rootMargin: 'auto' })).toThrow();
@@ -64,19 +62,19 @@ describe('IntersectionObserver', () => {
 		});
 
 		it('Throws RangeError when threshold is outside 0..1.', () => {
-			expect(() => new window.IntersectionObserver(() => {}, { threshold: -0.1 })).toThrowError(
+			expect(() => new window.IntersectionObserver(() => {}, { threshold: -0.1 })).toThrow(
 				/Threshold values must be between 0 and 1 inclusive/
 			);
-			expect(() => new window.IntersectionObserver(() => {}, { threshold: 1.1 })).toThrowError(
+			expect(() => new window.IntersectionObserver(() => {}, { threshold: 1.1 })).toThrow(
 				/Threshold values must be between 0 and 1 inclusive/
 			);
-			expect(() => new window.IntersectionObserver(() => {}, { threshold: [0, 2] })).toThrowError(
+			expect(() => new window.IntersectionObserver(() => {}, { threshold: [0, 2] })).toThrow(
 				/Threshold values must be between 0 and 1 inclusive/
 			);
 		});
 
 		it('Throws TypeError when threshold is not numeric.', () => {
-			expect(() => new window.IntersectionObserver(() => {}, { threshold: <any>'x' })).toThrowError(
+			expect(() => new window.IntersectionObserver(() => {}, { threshold: <any>'x' })).toThrow(
 				/threshold/
 			);
 		});
@@ -122,8 +120,8 @@ describe('IntersectionObserver', () => {
 	describe('observe()', () => {
 		it('Throws when target is not an Element.', () => {
 			const observer = new window.IntersectionObserver(() => {});
-			expect(() => observer.observe(<any>null)).toThrowError(/parameter 1 is not of type 'Element'/);
-			expect(() => observer.observe(<any>document.createTextNode('x'))).toThrowError(
+			expect(() => observer.observe(<any>null)).toThrow(/parameter 1 is not of type 'Element'/);
+			expect(() => observer.observe(<any>document.createTextNode('x'))).toThrow(
 				/parameter 1 is not of type 'Element'/
 			);
 		});
