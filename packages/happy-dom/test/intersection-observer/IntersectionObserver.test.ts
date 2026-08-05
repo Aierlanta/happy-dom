@@ -26,6 +26,10 @@ describe('IntersectionObserver', () => {
 	 *
 	 * @param element Element.
 	 * @param rect Rect.
+	 * @param rect.x
+	 * @param rect.y
+	 * @param rect.width
+	 * @param rect.height
 	 */
 	function mockRect(
 		element: Element,
@@ -110,9 +114,7 @@ describe('IntersectionObserver', () => {
 	describe('observe()', () => {
 		it('Throws for invalid target.', () => {
 			const observer = new window.IntersectionObserver(() => {});
-			expect(() => observer.observe(<any>null)).toThrow(
-				/parameter 1 is not of type 'Element'/
-			);
+			expect(() => observer.observe(<any>null)).toThrow(/parameter 1 is not of type 'Element'/);
 			expect(() => observer.observe(<any>{})).toThrow(/parameter 1 is not of type 'Element'/);
 		});
 
