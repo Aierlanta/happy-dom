@@ -76,7 +76,11 @@ export default class IntersectionObserver {
 		let rootMargin: string;
 
 		try {
-			parsedRootMargin = IntersectionObserverUtility.parseRootMargin(init.rootMargin ?? '0px');
+			parsedRootMargin = IntersectionObserverUtility.parseRootMargin(
+				init.rootMargin === undefined || init.rootMargin === null
+					? '0px'
+					: String(init.rootMargin)
+			);
 			rootMargin = IntersectionObserverUtility.serializeRootMargin(parsedRootMargin);
 		} catch (error) {
 			if (error instanceof SyntaxError) {
