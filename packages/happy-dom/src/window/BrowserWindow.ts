@@ -68,7 +68,7 @@ import File from '../file/File.js';
 import type FileReader from '../file/FileReader.js';
 import type FormData from '../form-data/FormData.js';
 import History from '../history/History.js';
-import IntersectionObserver from '../intersection-observer/IntersectionObserver.js';
+import type IntersectionObserver from '../intersection-observer/IntersectionObserver.js';
 import IntersectionObserverEntry from '../intersection-observer/IntersectionObserverEntry.js';
 import Location from '../location/Location.js';
 import MediaQueryList from '../match-media/MediaQueryList.js';
@@ -662,7 +662,7 @@ export default class BrowserWindow extends EventTarget implements INodeJSGlobal 
 	public readonly TextTrackCueList = TextTrackCueList;
 	public readonly ValidityState = ValidityState;
 	public readonly MutationRecord = MutationRecord;
-	public readonly IntersectionObserver = IntersectionObserver;
+	public declare readonly IntersectionObserver: typeof IntersectionObserver;
 	public readonly IntersectionObserverEntry = IntersectionObserverEntry;
 	public readonly CSSStyleDeclaration = CSSStyleDeclaration;
 	public readonly CSSRule = CSSRule;
@@ -838,6 +838,7 @@ export default class BrowserWindow extends EventTarget implements INodeJSGlobal 
 	// Used for tracking capture event listeners to improve performance when they are not used.
 	// See EventTarget class.
 	public [PropertySymbol.mutationObservers]: MutationObserver[] = [];
+	public [PropertySymbol.intersectionObservers]: IntersectionObserver[] = [];
 	public readonly [PropertySymbol.readyStateManager]: DocumentReadyStateManager;
 	public [PropertySymbol.location]: Location;
 	public [PropertySymbol.history]: History;
@@ -2672,6 +2673,10 @@ export default class BrowserWindow extends EventTarget implements INodeJSGlobal 
 			} else {
 				callback(this.performance.now());
 			}
+
+			for (const observer of this[PropertySymbol.intersectionObservers]) {
+				observer[PropertySymbol.updateIntersectionObservations]();
+			}
 		});
 		this.#browserFrame[PropertySymbol.asyncTaskManager].startImmediate(id);
 		return id;
@@ -2983,6 +2988,16 @@ export default class BrowserWindow extends EventTarget implements INodeJSGlobal 
 		}
 
 		this[PropertySymbol.mutationObservers] = [];
+
+		const intersectionObservers = this[PropertySymbol.intersectionObservers];
+
+		for (const intersectionObserver of intersectionObservers) {
+			if (intersectionObserver[PropertySymbol.destroy]) {
+				intersectionObserver[PropertySymbol.destroy]();
+			}
+		}
+
+		this[PropertySymbol.intersectionObservers] = [];
 
 		for (const webSocket of this[PropertySymbol.openWebSockets]) {
 			webSocket[PropertySymbol.destroy]();
