@@ -620,6 +620,7 @@ export default class BrowserWindow extends EventTarget implements INodeJSGlobal 
 
 	// Other classes that has to be bound to the Window context (populated by WindowContextClassExtender)
 	public declare readonly MutationObserver: typeof MutationObserver;
+	public declare readonly IntersectionObserver: typeof IntersectionObserver;
 	public declare readonly MessagePort: typeof MessagePort;
 	public declare readonly CSSStyleSheet: typeof CSSStyleSheet;
 	public declare readonly DOMException: typeof DOMException;
@@ -662,7 +663,6 @@ export default class BrowserWindow extends EventTarget implements INodeJSGlobal 
 	public readonly TextTrackCueList = TextTrackCueList;
 	public readonly ValidityState = ValidityState;
 	public readonly MutationRecord = MutationRecord;
-	public readonly IntersectionObserver = IntersectionObserver;
 	public readonly IntersectionObserverEntry = IntersectionObserverEntry;
 	public readonly CSSStyleDeclaration = CSSStyleDeclaration;
 	public readonly CSSRule = CSSRule;
@@ -838,6 +838,7 @@ export default class BrowserWindow extends EventTarget implements INodeJSGlobal 
 	// Used for tracking capture event listeners to improve performance when they are not used.
 	// See EventTarget class.
 	public [PropertySymbol.mutationObservers]: MutationObserver[] = [];
+	public [PropertySymbol.intersectionObservers]: IntersectionObserver[] = [];
 	public readonly [PropertySymbol.readyStateManager]: DocumentReadyStateManager;
 	public [PropertySymbol.location]: Location;
 	public [PropertySymbol.history]: History;
@@ -2659,6 +2660,7 @@ export default class BrowserWindow extends EventTarget implements INodeJSGlobal 
 		const id = TIMER.setImmediate(() => {
 			// We need to call endImmediate() before the callback as the callback might throw an error.
 			this.#browserFrame[PropertySymbol.asyncTaskManager].endImmediate(id);
+			this.#updateIntersectionObservers();
 			if (useTryCatch) {
 				let result: any;
 				try {
@@ -2675,6 +2677,16 @@ export default class BrowserWindow extends EventTarget implements INodeJSGlobal 
 		});
 		this.#browserFrame[PropertySymbol.asyncTaskManager].startImmediate(id);
 		return id;
+	}
+
+	/**
+	 * Updates intersection observers.
+	 */
+	#updateIntersectionObservers(): void {
+		const observers = this[PropertySymbol.intersectionObservers];
+		for (const observer of observers) {
+			observer[PropertySymbol.updateIntersectionObservations]();
+		}
 	}
 
 	/**
@@ -2983,6 +2995,16 @@ export default class BrowserWindow extends EventTarget implements INodeJSGlobal 
 		}
 
 		this[PropertySymbol.mutationObservers] = [];
+
+		const intersectionObservers = this[PropertySymbol.intersectionObservers];
+
+		for (const intersectionObserver of intersectionObservers) {
+			if (intersectionObserver[PropertySymbol.destroy]) {
+				intersectionObserver[PropertySymbol.destroy]();
+			}
+		}
+
+		this[PropertySymbol.intersectionObservers] = [];
 
 		for (const webSocket of this[PropertySymbol.openWebSockets]) {
 			webSocket[PropertySymbol.destroy]();
