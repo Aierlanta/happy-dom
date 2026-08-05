@@ -36,14 +36,14 @@ describe('IntersectionObserver', () => {
 
 	describe('constructor()', () => {
 		it('Throws when callback is missing.', () => {
-			expect(() => new (<any>window.IntersectionObserver)()).toThrow(TypeError);
+			expect(() => new (<any>window.IntersectionObserver)()).toThrow(
+				/1 argument required, but only 0 present/
+			);
 		});
 
 		it('Throws when callback is not a function.', () => {
 			expect(() => new window.IntersectionObserver(<any>'callback')).toThrow(
-				new TypeError(
-					`Failed to construct 'IntersectionObserver': The callback provided as parameter 1 is not a function.`
-				)
+				/The callback provided as parameter 1 is not a function/
 			);
 		});
 
@@ -53,7 +53,7 @@ describe('IntersectionObserver', () => {
 					new window.IntersectionObserver(() => {}, {
 						root: <any>{}
 					})
-			).toThrow(TypeError);
+			).toThrow(/The root specified must be an Element or null/);
 		});
 
 		it('Throws when rootMargin is invalid.', () => {
@@ -62,7 +62,7 @@ describe('IntersectionObserver', () => {
 					new window.IntersectionObserver(() => {}, {
 						rootMargin: '10em'
 					})
-			).toThrow(Error);
+			).toThrow(/Failed to parse rootMargin/);
 		});
 
 		it('Throws when threshold is out of range.', () => {
@@ -71,11 +71,7 @@ describe('IntersectionObserver', () => {
 					new window.IntersectionObserver(() => {}, {
 						threshold: 1.5
 					})
-			).toThrow(
-				new TypeError(
-					`Failed to construct 'IntersectionObserver': Threshold values must be numbers between 0 and 1 inclusive.`
-				)
-			);
+			).toThrow(/Threshold values must be numbers between 0 and 1 inclusive/);
 		});
 
 		it('Normalizes rootMargin to four values.', () => {
@@ -114,8 +110,10 @@ describe('IntersectionObserver', () => {
 	describe('observe()', () => {
 		it('Throws for invalid target.', () => {
 			const observer = new window.IntersectionObserver(() => {});
-			expect(() => observer.observe(<any>null)).toThrow(TypeError);
-			expect(() => observer.observe(<any>{})).toThrow(TypeError);
+			expect(() => observer.observe(<any>null)).toThrow(
+				/parameter 1 is not of type 'Element'/
+			);
+			expect(() => observer.observe(<any>{})).toThrow(/parameter 1 is not of type 'Element'/);
 		});
 
 		it('Does not invoke callback synchronously.', () => {
