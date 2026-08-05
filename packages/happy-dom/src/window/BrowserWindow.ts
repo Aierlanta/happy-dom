@@ -838,6 +838,7 @@ export default class BrowserWindow extends EventTarget implements INodeJSGlobal 
 	// Used for tracking capture event listeners to improve performance when they are not used.
 	// See EventTarget class.
 	public [PropertySymbol.mutationObservers]: MutationObserver[] = [];
+	public [PropertySymbol.intersectionObservers]: IntersectionObserver[] = [];
 	public readonly [PropertySymbol.readyStateManager]: DocumentReadyStateManager;
 	public [PropertySymbol.location]: Location;
 	public [PropertySymbol.history]: History;
@@ -2983,6 +2984,16 @@ export default class BrowserWindow extends EventTarget implements INodeJSGlobal 
 		}
 
 		this[PropertySymbol.mutationObservers] = [];
+
+		const intersectionObservers = this[PropertySymbol.intersectionObservers];
+
+		for (const intersectionObserver of intersectionObservers) {
+			if (intersectionObserver[PropertySymbol.destroy]) {
+				intersectionObserver[PropertySymbol.destroy]();
+			}
+		}
+
+		this[PropertySymbol.intersectionObservers] = [];
 
 		for (const webSocket of this[PropertySymbol.openWebSockets]) {
 			webSocket[PropertySymbol.destroy]();
