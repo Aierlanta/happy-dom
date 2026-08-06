@@ -77,9 +77,7 @@ export default class IntersectionObserver {
 
 		try {
 			parsedRootMargin = IntersectionObserverUtility.parseRootMargin(
-				init.rootMargin === undefined || init.rootMargin === null
-					? '0px'
-					: String(init.rootMargin)
+				init.rootMargin === undefined || init.rootMargin === null ? '0px' : String(init.rootMargin)
 			);
 			rootMargin = IntersectionObserverUtility.serializeRootMargin(parsedRootMargin);
 		} catch (error) {
