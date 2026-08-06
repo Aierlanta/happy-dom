@@ -3,10 +3,11 @@ import type Element from '../nodes/element/Element.js';
 export default interface IIntersectionObserverInit {
 	/**
 	 * A specific ancestor of the target element against which the intersection is to be calculated.
+	 * If null or omitted, the bounds of the document's viewport are used.
 	 */
-	root?: Element;
+	root?: Element | null;
 	/**
-	 * A string which specifies a specific property to observe on the intersection target.
+	 * A string which specifies a set of offsets to add to the root's bounding box when calculating intersections.
 	 */
 	rootMargin?: string;
 	/**
